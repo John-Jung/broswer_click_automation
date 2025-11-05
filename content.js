@@ -1,23 +1,33 @@
-let isListeningForClick = false;
 let targetX, targetY;
+let isListeningForClick = false;
 let isClicking = false;
 
-// popup에서 메시지 받기
+console.log(`[Content Script] 탭 로드됨`);
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log(`[Content Script] 메시지 수신:`, request.action, request);
+    
     if (request.action === "startListening") {
         isListeningForClick = true;
-    } else if (request.action === "stopListening") {
-        isListeningForClick = false;
+        console.log(`[Content Script] 위치 설정 시작`);
+    }
+    else if (request.action === "startClicking") {
+        targetX = request.coords.x;
+        targetY = request.coords.y;
+        isClicking = true;
+        console.log(`[Content Script] 🟢 클릭 시작 - X: ${targetX}, Y: ${targetY}`);
+    }
+    else if (request.action === "stopClicking") {
+        isClicking = false;
+        console.log(`[Content Script] 🔴 클릭 중지`);
     }
 });
 
-// 웹페이지 전체에서 마우스 움직임 감지
 document.addEventListener('mousemove', (e) => {
     if (isListeningForClick) {
         targetX = e.clientX;
         targetY = e.clientY;
         
-        // popup에 좌표 전송
         chrome.runtime.sendMessage({
             action: "updateCoords",
             x: targetX,
@@ -26,10 +36,11 @@ document.addEventListener('mousemove', (e) => {
     }
 });
 
-// 클릭하면 좌표 고정
 document.addEventListener('click', (e) => {
     if (isListeningForClick) {
         isListeningForClick = false;
+        console.log(`[Content Script] 좌표 확정 - X: ${targetX}, Y: ${targetY}`);
+        
         chrome.runtime.sendMessage({
             action: "coordsSet",
             x: targetX,
@@ -38,24 +49,25 @@ document.addEventListener('click', (e) => {
     }
 }, true);
 
-// ESC 키로 반복 클릭 시작/중지
+// ESC를 Service Worker로 전송
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         e.preventDefault();
-        isClicking = !isClicking;
+        console.log(`[Content Script] ⚠️ ESC 눌림`);
         
+        // Service Worker로 전송 (Popup 아니라!)
         chrome.runtime.sendMessage({
-            action: "toggleClicking",
-            isClicking: isClicking
+            action: "escPressed"
         });
     }
-});
+}, true);
 
-// 반복 클릭 루프
 const clickLoop = () => {
     if (isClicking && targetX && targetY) {
         const el = document.elementFromPoint(targetX, targetY);
-        if (el) el.click();
+        if (el) {
+            el.click();
+        }
     }
     setTimeout(clickLoop, 100);
 };

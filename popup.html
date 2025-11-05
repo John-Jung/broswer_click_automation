@@ -2,30 +2,36 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Clicker</title>
+    <title>Auto Clicker - Multi Tab</title>
     <style>
         body {
-            width: 300px;
-            padding: 10px;
+            width: 350px;
+            padding: 15px;
             font-family: Arial, sans-serif;
         }
         button {
-            padding: 8px 16px;
+            padding: 10px 16px;
             margin: 5px 0;
             cursor: pointer;
+            width: 100%;
         }
         div {
             margin: 10px 0;
-            padding: 5px;
+            padding: 8px;
             border: 1px solid #ccc;
+            font-size: 12px;
+        }
+        #status {
+            background-color: #ffffcc;
         }
     </style>
 </head>
 <body>
-    <button id="setPosition">위치 설정 (마우스 움직임으로 자동 감지)</button>
+    <h3>Multi-Tab Auto Clicker</h3>
+    <button id="setPosition">위치 설정 (현재 탭)</button>
+    <button id="startAll">모든 탭에서 클릭 시작</button>
     <div id="coords">좌표: 설정 대기 중</div>
-    <div id="status">ESC: 클릭 시작/중지</div>
+    <div id="status">ESC: 모든 탭 동시 시작/중지</div>
     
     <script src="popup.js"></script>
 </body>
