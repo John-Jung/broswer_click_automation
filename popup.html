@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Clicker</title>
+    <style>
+        body {
+            width: 300px;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        div {
+            margin: 10px 0;
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <button id="setPosition">위치 설정 (마우스 움직임으로 자동 감지)</button>
+    <div id="coords">좌표: 설정 대기 중</div>
+    <div id="status">ESC: 클릭 시작/중지</div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>
