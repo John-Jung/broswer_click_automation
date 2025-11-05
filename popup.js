@@ -1,6 +1,7 @@
 let tabCoords = {};
 let isClickingAll = false;
 let allTabs = [];
+let clickInterval = 100; // 기본값: 100ms
 
 console.log(`[Popup] 팝업 로드됨`);
 
@@ -10,6 +11,7 @@ async function initPopup() {
     
     document.getElementById('setPosition').addEventListener('click', handleSetPosition);
     document.getElementById('startAll').addEventListener('click', handleStartAll);
+    document.getElementById('setInterval').addEventListener('click', handleSetInterval);
 }
 
 async function handleSetPosition() {
@@ -27,6 +29,27 @@ async function handleStartAll() {
     chrome.runtime.sendMessage({action: "escPressed"});
 }
 
+function handleSetInterval() {
+    const input = document.getElementById('clickInterval');
+    const seconds = parseFloat(input.value);
+    
+    if (isNaN(seconds) || seconds <= 0) {
+        alert('0보다 큰 숫자를 입력하세요');
+        return;
+    }
+    
+    clickInterval = seconds * 1000; // 초를 ms로 변환
+    console.log(`[Popup] 클릭 간격 설정: ${seconds}초 (${clickInterval}ms)`);
+    
+    // 모든 탭에 새로운 간격 전송
+    chrome.runtime.sendMessage({
+        action: "setClickInterval",
+        interval: clickInterval
+    });
+    
+    document.getElementById('intervalDisplay').innerText = `현재 간격: ${seconds}초 (${clickInterval}ms)`;
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log(`[Popup] 메시지:`, request.action);
     
@@ -34,7 +57,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         document.getElementById('coords').innerText = `[TAB ${sender.tab.id}] X: ${request.x}, Y: ${request.y}`;
     } 
     else if (request.action === "coordsSet") {
-        tabCoords[sender.tab.id] = {x: request.x, y: request.y};
         document.getElementById('coords').innerText = `[TAB ${sender.tab.id}] 확정: X: ${request.x}, Y: ${request.y}`;
     }
     else if (request.action === "statusUpdate") {

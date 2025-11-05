@@ -24,14 +24,35 @@
         #status {
             background-color: #ffffcc;
         }
+        .interval-section {
+            margin: 15px 0;
+            padding: 10px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
     <h3>Multi-Tab Auto Clicker</h3>
+    
     <button id="setPosition">위치 설정 (현재 탭)</button>
     <button id="startAll">모든 탭에서 클릭 시작</button>
+    
     <div id="coords">좌표: 설정 대기 중</div>
     <div id="status">ESC: 모든 탭 동시 시작/중지</div>
+    
+    <div class="interval-section">
+        <label for="clickInterval">클릭 간격 (초):</label>
+        <input type="number" id="clickInterval" min="0.1" step="0.1" value="0.1" placeholder="0.1">
+        <button id="setInterval">간격 설정</button>
+        <div id="intervalDisplay">현재 간격: 0.1초 (100ms)</div>
+    </div>
     
     <script src="popup.js"></script>
 </body>

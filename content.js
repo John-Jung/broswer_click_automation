@@ -1,6 +1,7 @@
 let targetX, targetY;
 let isListeningForClick = false;
 let isClicking = false;
+let clickInterval = 100; // 기본값: 100ms
 
 console.log(`[Content Script] 탭 로드됨`);
 
@@ -14,12 +15,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     else if (request.action === "startClicking") {
         targetX = request.coords.x;
         targetY = request.coords.y;
+        clickInterval = request.interval || 100; // 간격 설정
         isClicking = true;
-        console.log(`[Content Script] 🟢 클릭 시작 - X: ${targetX}, Y: ${targetY}`);
+        console.log(`[Content Script] 🟢 클릭 시작 - X: ${targetX}, Y: ${targetY}, 간격: ${clickInterval}ms`);
     }
     else if (request.action === "stopClicking") {
         isClicking = false;
         console.log(`[Content Script] 🔴 클릭 중지`);
+    }
+    else if (request.action === "setClickInterval") {
+        clickInterval = request.interval;
+        console.log(`[Content Script] 🔧 클릭 간격 변경: ${clickInterval}ms`);
     }
 });
 
@@ -49,13 +55,11 @@ document.addEventListener('click', (e) => {
     }
 }, true);
 
-// ESC를 Service Worker로 전송
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         e.preventDefault();
         console.log(`[Content Script] ⚠️ ESC 눌림`);
         
-        // Service Worker로 전송 (Popup 아니라!)
         chrome.runtime.sendMessage({
             action: "escPressed"
         });
@@ -66,9 +70,10 @@ const clickLoop = () => {
     if (isClicking && targetX && targetY) {
         const el = document.elementFromPoint(targetX, targetY);
         if (el) {
+            console.log(`[Content Script] 클릭 - X: ${targetX}, Y: ${targetY}`);
             el.click();
         }
     }
-    setTimeout(clickLoop, 100);
+    setTimeout(clickLoop, clickInterval); // 동적 간격 사용
 };
 clickLoop();
