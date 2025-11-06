@@ -14,7 +14,7 @@ A Chrome Extension for automated multi-tab clicking
 
 ---
 
-## Installation
+## Installation (Plan for deploy)
 
 1. Create folder structure:
 ```
