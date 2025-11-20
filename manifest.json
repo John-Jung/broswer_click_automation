@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "Auto Clicker",
+  "name": "Clicktomate",
   "version": "1.0",
   "description": "자동 클릭 도구",
   "permissions": ["activeTab", "scripting", "tabs", "storage"],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Auto Clicker"
+    "default_title": "Clicktomate"
   },
   "background": {
     "service_worker": "background.js"
