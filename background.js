@@ -1,7 +1,7 @@
 let allTabs = [];
 let isClickingAll = false;
 let tabCoords = {};
-let clickInterval = 100; // 기본값: 100ms
+let clickInterval = 100;
 
 console.log(`[Background] Service Worker 로드됨`);
 
@@ -17,11 +17,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         handleEscPressed();
     }
     else if (request.action === "setClickInterval") {
-        // 클릭 간격 설정
         clickInterval = request.interval;
         console.log(`[Background] 🔧 클릭 간격 설정: ${clickInterval}ms`);
-        
-        // 모든 활성 탭에 새 간격 전송
         broadcastClickInterval();
     }
 });
@@ -51,7 +48,7 @@ async function handleEscPressed() {
             chrome.tabs.sendMessage(tab.id, {
                 action: "startClicking",
                 coords: tabCoords[tab.id],
-                interval: clickInterval  // 간격도 함께 전송
+                interval: clickInterval
             }).catch(err => console.log(`[Background] ❌ 탭 ${tab.id}:`, err));
         } else if (!isClickingAll) {
             console.log(`[Background] 🛑 탭 ${tab.id}에 중지 명령`);

@@ -2,58 +2,378 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Auto Clicker - Multi Tab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicktomate</title>
     <style>
-        body {
-            width: 350px;
-            padding: 15px;
-            font-family: Arial, sans-serif;
-        }
-        button {
-            padding: 10px 16px;
-            margin: 5px 0;
-            cursor: pointer;
-            width: 100%;
-        }
-        div {
-            margin: 10px 0;
-            padding: 8px;
-            border: 1px solid #ccc;
-            font-size: 12px;
-        }
-        #status {
-            background-color: #ffffcc;
-        }
-        .interval-section {
-            margin: 15px 0;
-            padding: 10px;
-            border: 2px solid #007bff;
-            border-radius: 5px;
-        }
-        input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
+        }
+
+        body {
+            width: 480px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'San Francisco', 'Helvetica Neue', sans-serif;
+            background: #ffffff;
+            color: #1d1d1d;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #1d1d1d;
+                color: #f5f5f7;
+            }
+        }
+
+        /* 헤더 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .language-toggle {
+            display: flex;
+            gap: 8px;
+            background: #f5f5f7;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .language-toggle {
+                background: #424245;
+            }
+        }
+
+        .lang-btn {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    color: #86868b;
+    transition: all 0.2s;
+    white-space: nowrap;  /* ← 추가 */
+    flex-shrink: 0;       /* ← 추가 */
+    min-width: fit-content; /* ← 추가 */
+}
+
+        .lang-btn.active {
+            background: #ffffff;
+            color: #1d1d1d;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .lang-btn.active {
+                background: #424245;
+                color: #f5f5f7;
+            }
+        }
+
+        /* 섹션 */
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #86868b;
+            margin-bottom: 8px;
+        }
+
+        /* 버튼 */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        button {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #0071e3;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #0077ed;
+        }
+
+        .btn-primary:active {
+            background: #0066d9;
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #f5f5f7;
+            color: #1d1d1d;
+        }
+
+        .btn-secondary:hover {
+            background: #ececf1;
+        }
+
+        .btn-secondary:active {
+            background: #e0e0e5;
+            transform: scale(0.98);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .btn-secondary {
+                background: #424245;
+                color: #f5f5f7;
+            }
+
+            .btn-secondary:hover {
+                background: #515154;
+            }
+
+            .btn-secondary:active {
+                background: #5a5a5d;
+            }
+        }
+
+        /* 정보 표시 */
+        .info-box {
+            background: #f5f5f7;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .info-box {
+                background: #424245;
+                color: #f5f5f7;
+            }
+        }
+
+        .status-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #86868b;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .status-value {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* 간격 설정 섹션 */
+        .interval-section {
+            background: #f5f5f7;
+            padding: 16px;
+            border-radius: 10px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .interval-section {
+                background: #424245;
+            }
+        }
+
+        .interval-input-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #ffffff;
+            color: #1d1d1d;
+            font-family: 'Menlo', 'Monaco', monospace;
+            font-weight: 500;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            input[type="number"] {
+                background: #1d1d1d;
+                color: #f5f5f7;
+                border: 1px solid #424245;
+            }
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #0071e3;
+        }
+
+        .interval-info {
+            font-size: 12px;
+            color: #86868b;
+            margin-top: 8px;
+        }
+
+        /* 상태 표시 */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #a2a2a7;
+            animation: none;
+        }
+
+        .status-dot.active {
+            background: #34c759;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* 향상된 팁 */
+        .tip-box {
+            background: #fff9e6;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #7d6e0f;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .tip-box {
+                background: #423600;
+                color: #f5deb3;
+            }
+        }
+
+        /* 디바이더 */
+        .divider {
+            height: 1px;
+            background: #e5e5ea;
+            margin: 16px 0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .divider {
+                background: #424245;
+            }
         }
     </style>
 </head>
 <body>
-    <h3>Multi-Tab Auto Clicker</h3>
-    
-    <button id="setPosition">위치 설정 (현재 탭)</button>
-    <button id="startAll">모든 탭에서 클릭 시작</button>
-    
-    <div id="coords">좌표: 설정 대기 중</div>
-    <div id="status">ESC: 모든 탭 동시 시작/중지</div>
-    
-    <div class="interval-section">
-        <label for="clickInterval">클릭 간격 (초):</label>
-        <input type="number" id="clickInterval" min="0.1" step="0.1" value="0.1" placeholder="0.1">
-        <button id="setInterval">간격 설정</button>
-        <div id="intervalDisplay">현재 간격: 0.1초 (100ms)</div>
+    <div class="header">
+        <h1 id="title">Auto Clicker</h1>
+        <div class="language-toggle">
+            <button class="lang-btn active" id="langKo">한글</button>
+            <button class="lang-btn" id="langEn">EN</button>
+            <button class="lang-btn" id="langZh">中文</button>
+            <button class="lang-btn" id="langJa">日本語</button>
+        </div>
     </div>
-    
+
+    <!-- 좌표 설정 섹션 -->
+    <div class="section">
+        <div class="section-title" id="coordinateSection">좌표 설정</div>
+        <div class="button-group">
+            <button class="btn-primary" id="setPosition">
+                <span id="setBtnText">위치 설정 (현재 탭)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 좌표 표시 -->
+    <div class="section">
+        <div class="info-box">
+            <div class="status-label" id="coordStatusLabel">상태</div>
+            <div class="status-value" id="coords">설정 대기 중</div>
+        </div>
+    </div>
+
+    <!-- 간격 설정 섹션 -->
+    <div class="section">
+        <div class="section-title" id="intervalSection">클릭 간격</div>
+        <div class="interval-section">
+            <label for="clickInterval" style="display: block; margin-bottom: 8px; font-size: 13px; font-weight: 500;">
+                <span id="intervalLabel">초 단위</span>
+            </label>
+            <div class="interval-input-group">
+                <input type="number" id="clickInterval" min="0.1" step="0.1" value="0.1">
+                <button class="btn-primary" id="setInterval" style="flex: 0; min-width: 100px;">
+                    <span id="setIntervalBtnText">설정</span>
+                </button>
+            </div>
+            <div class="interval-info" id="intervalDisplay">현재: 0.1초 (100ms)</div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 제어 섹션 -->
+    <div class="section">
+        <div class="section-title" id="controlSection">제어</div>
+        <button class="btn-secondary" id="startAll">
+            <span id="startAllBtnText">모든 탭에서 시작</span>
+        </button>
+    </div>
+
+    <!-- 상태 표시 -->
+    <div class="section">
+        <div class="info-box">
+            <div class="status-label" id="modeLabel">상태</div>
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">멈춤</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 팁 -->
+    <div class="section">
+        <div class="tip-box" id="tipText">
+            💡 팁: 어느 탭에서나 <strong>ESC</strong> 키를 눌러 모든 탭의 클릭을 시작/중지할 수 있습니다.
+        </div>
+    </div>
+
     <script src="popup.js"></script>
 </body>
 </html>

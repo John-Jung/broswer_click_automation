@@ -1,7 +1,7 @@
 let targetX, targetY;
 let isListeningForClick = false;
 let isClicking = false;
-let clickInterval = 100; // 기본값: 100ms
+let clickInterval = 100;
 
 console.log(`[Content Script] 탭 로드됨`);
 
@@ -15,7 +15,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     else if (request.action === "startClicking") {
         targetX = request.coords.x;
         targetY = request.coords.y;
-        clickInterval = request.interval || 100; // 간격 설정
+        clickInterval = request.interval || 100;
         isClicking = true;
         console.log(`[Content Script] 🟢 클릭 시작 - X: ${targetX}, Y: ${targetY}, 간격: ${clickInterval}ms`);
     }
@@ -52,6 +52,9 @@ document.addEventListener('click', (e) => {
             x: targetX,
             y: targetY
         });
+         // ✅ 사용자에게 피드백 (선택)
+        console.log(`✅ 좌표 설정 완료: X: ${targetX}, Y: ${targetY}`);
+        console.log(`💡 이제 ESC를 눌러서 클릭을 시작하세요!`);
     }
 }, true);
 
@@ -74,6 +77,6 @@ const clickLoop = () => {
             el.click();
         }
     }
-    setTimeout(clickLoop, clickInterval); // 동적 간격 사용
+    setTimeout(clickLoop, clickInterval);
 };
 clickLoop();

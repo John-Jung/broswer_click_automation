@@ -3,7 +3,7 @@
   "name": "Auto Clicker",
   "version": "1.0",
   "description": "자동 클릭 도구",
-  "permissions": ["activeTab", "scripting", "tabs"],
+  "permissions": ["activeTab", "scripting", "tabs", "storage"],
   "action": {
     "default_popup": "popup.html",
     "default_title": "Auto Clicker"
