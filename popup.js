@@ -172,17 +172,39 @@ async function handleSetPosition() {
     
     console.log(`[Popup] 위치 설정 시작 - TAB ${tab.id}`);
     
+    // ✅ 특수 페이지 확인
+    if (
+    tab.url.startsWith("chrome://") ||
+    tab.url.startsWith("edge://") ||
+    tab.url.startsWith("about:") ||
+    tab.url.startsWith("chrome-extension://") ||
+    tab.url.includes("chrome.google.com/webstore")
+    )  {
+            alert(currentLang === 'ko' ? 
+                '일반 웹사이트에서만 사용 가능합니다. (Google, GitHub 등)' : 
+                'Only works on regular websites (Google, GitHub, etc)');
+            return;
+        }
+    
     isListeningForClick = true;
     updateCoordinatesDisplay(`[TAB ${tab.id}] ${currentLang === 'ko' ? '마우스를 움직여서 위치 설정...' : 'Move mouse to set position...'}`);
     
-    chrome.tabs.sendMessage(tab.id, {action: "startListening"}).catch(err => {
-        console.error(`[Popup] 메시지 전송 실패:`, err);
-    });
-    
-    // ✅ Popup 창 닫기
-    setTimeout(() => {
-        window.close();
-    }, 300); // 0.3초 후 닫기 (메시지 전송 완료 대기)
+    // ✅ 에러 처리 개선
+    try {
+        await chrome.tabs.sendMessage(tab.id, {action: "startListening"});
+        console.log(`[Popup] 메시지 전송 성공`);
+        
+        // 1000ms 후 팝업 닫기 (content script 로드 보장)
+        setTimeout(() => {
+            window.close();
+        }, 1000);
+    } catch (err) {
+        console.error(`[Popup] Content script 로드 실패:`, err);
+        alert(currentLang === 'ko' ? 
+            '이 페이지에서는 작동하지 않습니다. 다른 웹사이트를 시도해주세요.' : 
+            'This page is not supported. Try another website.');
+        isListeningForClick = false;
+    }
 }
 
 async function handleStartAll() {

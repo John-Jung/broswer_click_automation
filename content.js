@@ -71,10 +71,31 @@ document.addEventListener('keydown', (e) => {
 
 const clickLoop = () => {
     if (isClicking && targetX && targetY) {
-        const el = document.elementFromPoint(targetX, targetY);
-        if (el) {
-            console.log(`[Content Script] 클릭 - X: ${targetX}, Y: ${targetY}`);
-            el.click();
+        try {
+            const el = document.elementFromPoint(targetX, targetY);
+            
+            if (el) {
+                // 방법 1: 요소가 .click() 메서드를 지원하는지 확인
+                if (typeof el.click === 'function') {
+                    console.log(`[Content Script] 클릭 - X: ${targetX}, Y: ${targetY}`);
+                    el.click();
+                } else {
+                    // 방법 2: 클릭 불가능한 요소에 MouseEvent 생성
+                    const clickEvent = new MouseEvent('click', {
+                        bubbles: true,
+                        cancelable: true,
+                        view: window,
+                        clientX: targetX,
+                        clientY: targetY
+                    });
+                    el.dispatchEvent(clickEvent);
+                    console.log(`[Content Script] MouseEvent 발생 - X: ${targetX}, Y: ${targetY}`);
+                }
+            } else {
+                console.warn(`[Content Script] ⚠️ 해당 좌표에 요소 없음 - X: ${targetX}, Y: ${targetY}`);
+            }
+        } catch (err) {
+            console.error(`[Content Script] ❌ 클릭 오류:`, err.message);
         }
     }
     setTimeout(clickLoop, clickInterval);

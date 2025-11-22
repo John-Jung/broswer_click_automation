@@ -1,20 +1,25 @@
 {
   "manifest_version": 3,
-  "name": "Auto Clicker",
-  "version": "1.0",
-  "description": "자동 클릭 도구",
+  "name": "Clicktomate",
+  "version": "0.8",
+  "description": "Automate repetitive clicking across multiple browser tabs with ease",
+  "icons": {
+    "128": "clicktomate_logo128.png"
+  },
   "permissions": ["activeTab", "scripting", "tabs", "storage"],
+  "host_permissions": ["<all_urls>"],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Auto Clicker"
+    "default_title": "Clicktomate"
   },
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"]
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
     }
   ]
 }
