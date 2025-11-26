@@ -2,6 +2,11 @@
 
 A Chrome Extension for automated multi-tab clicking
 
+
+## Installation
+
+- [Chrome Web Store](https://chromewebstore.google.com/detail/clicktomate/bonfeekicpogljaikbidmmhhjnocfhgi)
+
 ---
 
 ## Key Features
